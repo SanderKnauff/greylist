@@ -3,10 +3,12 @@ package ooo.sansk.imine.greylist;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.TextComponent;
+import org.bukkit.Material;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockMultiPlaceEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
@@ -16,6 +18,7 @@ import org.bukkit.event.entity.PlayerLeashEntityEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.player.PlayerArmorStandManipulateEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerPickupArrowEvent;
 
 public class GreylistListener implements Listener {
@@ -111,6 +114,19 @@ public class GreylistListener implements Listener {
         }
 
         notifyNotGreyListed(event.getPlayer());
+        event.setCancelled(true);
+    }
+
+    @EventHandler
+    public void onPlayerFarmlandTrample(PlayerInteractEvent event) {
+        if(event.getPlayer().hasPermission(GreylistPlugin.PERMISSION_GREYLIST_BLOCKS_BYPASS)){
+            return;
+        }
+
+        if(!event.getAction().equals(Action.PHYSICAL) || !event.getClickedBlock().getType().equals(Material.FARMLAND)){
+            return;
+        }
+
         event.setCancelled(true);
     }
 
