@@ -4,17 +4,16 @@ import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Material;
-import org.bukkit.entity.HumanEntity;
-import org.bukkit.entity.Player;
+import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockMultiPlaceEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
-import org.bukkit.event.entity.EntityPickupItemEvent;
-import org.bukkit.event.entity.FoodLevelChangeEvent;
-import org.bukkit.event.entity.PlayerLeashEntityEvent;
+import org.bukkit.event.entity.*;
+import org.bukkit.event.hanging.HangingBreakByEntityEvent;
+import org.bukkit.event.hanging.HangingBreakEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.player.PlayerArmorStandManipulateEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
@@ -133,6 +132,109 @@ public class GreylistListener implements Listener {
     @EventHandler
     public void onPlayerFoodLevelChange(FoodLevelChangeEvent event) {
         if(event.getEntity().hasPermission(GreylistPlugin.PERMISSION_GREYLIST_BLOCKS_BYPASS)){
+            return;
+        }
+
+        event.setCancelled(true);
+    }
+
+    @EventHandler
+    public void onHangingBreakByPlayerEvent(HangingBreakByEntityEvent event) {
+        if(!(event.getRemover() instanceof Player)){
+            return;
+        }
+        Player player = (Player) event.getRemover();
+
+        if(player.hasPermission(GreylistPlugin.PERMISSION_GREYLIST_BLOCKS_BYPASS)){
+            return;
+        }
+
+        event.setCancelled(true);
+    }
+
+    @EventHandler
+    public void onHangingBreakByMobEvent(HangingBreakByEntityEvent event) {
+        if(!(event.getRemover() instanceof Monster)){
+            return;
+        }
+        Monster monster = (Monster) event.getRemover();
+
+        if(!(monster.getTarget() instanceof Player)){
+            return;
+        }
+
+        Player player = (Player) monster.getTarget();
+
+        if(player.hasPermission(GreylistPlugin.PERMISSION_GREYLIST_BLOCKS_BYPASS)){
+            return;
+        }
+
+        event.setCancelled(true);
+    }
+
+    @EventHandler
+    public void onItemFrameDamageByPlayer(EntityDamageByEntityEvent event) {
+        if (!(event.getEntity() instanceof ItemFrame)) {
+            return;
+        }
+
+        if (!(event.getDamager() instanceof Player)) {
+            return;
+        }
+        Player player = (Player) event.getDamager();
+
+        if(player.hasPermission(GreylistPlugin.PERMISSION_GREYLIST_BLOCKS_BYPASS)){
+            return;
+        }
+
+        event.setCancelled(true);
+    }
+
+    @EventHandler
+    public void onItemFrameDamageByPlayerProjectile(EntityDamageByEntityEvent event) {
+        if (!(event.getEntity() instanceof ItemFrame)) {
+            return;
+        }
+
+        if (!(event.getDamager() instanceof Projectile)) {
+            return;
+        }
+        Projectile projectile = (Projectile) event.getDamager();
+
+        if (!(projectile.getShooter() instanceof Player)) {
+            return;
+        }
+        Player player = (Player) projectile.getShooter();
+
+        if(player.hasPermission(GreylistPlugin.PERMISSION_GREYLIST_BLOCKS_BYPASS)){
+            return;
+        }
+
+        event.setCancelled(true);
+    }
+
+    @EventHandler
+    public void onItemFrameDamageByMonsterProjectile(EntityDamageByEntityEvent event) {
+        if (!(event.getEntity() instanceof ItemFrame)) {
+            return;
+        }
+
+        if (!(event.getDamager() instanceof Projectile)) {
+            return;
+        }
+        Projectile projectile = (Projectile) event.getDamager();
+
+        if (!(projectile.getShooter() instanceof Monster)) {
+            return;
+        }
+        Monster monster = (Monster) projectile.getShooter();
+
+        if (!(monster.getTarget() instanceof Player)) {
+            return;
+        }
+        Player player = (Player) monster.getTarget();
+
+        if(player.hasPermission(GreylistPlugin.PERMISSION_GREYLIST_BLOCKS_BYPASS)){
             return;
         }
 
